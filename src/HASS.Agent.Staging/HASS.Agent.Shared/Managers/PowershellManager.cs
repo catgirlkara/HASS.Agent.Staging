@@ -55,20 +55,22 @@ namespace HASS.Agent.Shared.Managers
 
                 // set the right type of arguments
                 processInfo.Arguments = isScript ?
-                    $@"& '{command}'"
+                    command
                     : $@"& {{{command}}}";
 
                 // launch
                 using var process = new Process();
                 process.StartInfo = processInfo;
                 var start = process.Start();
-
+                
+                
                 if (!start)
                 {
                     Log.Error("[POWERSHELL] Unable to start processing {descriptor}: {command}", descriptor, command);
                     return false;
                 }
-
+                
+                Log.Information(process.StandardOutput.ReadToEnd());
                 // done
                 return true;
             }
