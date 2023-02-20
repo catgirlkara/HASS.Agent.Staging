@@ -739,8 +739,11 @@ namespace HASS.Agent.MQTT
         /// <param name="command"></param>
         private static void HandleCommandReceived(MqttApplicationMessage applicationMessage, AbstractCommand command)
         {
-            var payload = Encoding.UTF8.GetString(applicationMessage.Payload).ToLower();
-            if (string.IsNullOrWhiteSpace(payload)) return;
+            string payload = string.Empty;
+            if (applicationMessage.Payload != null)
+            {
+                Encoding.UTF8.GetString(applicationMessage.Payload).ToLower();
+            }
 
             if (payload.Contains("on")) command.TurnOn();
             else if (payload.Contains("off")) command.TurnOff();
@@ -760,8 +763,11 @@ namespace HASS.Agent.MQTT
         /// <param name="command"></param>
         private static void HandleActionReceived(MqttApplicationMessage applicationMessage, AbstractCommand command)
         {
-            var payload = Encoding.UTF8.GetString(applicationMessage.Payload);
-            if (string.IsNullOrWhiteSpace(payload)) return;
+            string payload = string.Empty;
+            if (applicationMessage.Payload != null)
+            {
+                Encoding.UTF8.GetString(applicationMessage.Payload);
+            }
 
             command.TurnOnWithAction(payload);
         }
