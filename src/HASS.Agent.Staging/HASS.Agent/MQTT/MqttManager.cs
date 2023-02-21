@@ -742,7 +742,7 @@ namespace HASS.Agent.MQTT
             string payload = string.Empty;
             if (applicationMessage.Payload != null)
             {
-                Encoding.UTF8.GetString(applicationMessage.Payload).ToLower();
+                payload = Encoding.UTF8.GetString(applicationMessage.Payload).ToLower();
             }
 
             if (payload.Contains("on")) command.TurnOn();
@@ -766,7 +766,7 @@ namespace HASS.Agent.MQTT
             string payload = string.Empty;
             if (applicationMessage.Payload != null)
             {
-                Encoding.UTF8.GetString(applicationMessage.Payload);
+                payload = Encoding.UTF8.GetString(applicationMessage.Payload);
             }
 
             command.TurnOnWithAction(payload);
