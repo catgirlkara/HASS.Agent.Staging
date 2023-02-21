@@ -50,7 +50,9 @@ namespace HASS.Agent.Shared.Managers
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true,
                     FileName = psExec,
-                    WorkingDirectory = workingDir
+                    WorkingDirectory = workingDir,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                 };
 
                 // set the right type of arguments
@@ -58,19 +60,30 @@ namespace HASS.Agent.Shared.Managers
                     command
                     : $@"& {{{command}}}";
 
+                Log.Information("[POWERSHELL] Staring process {descriptor}: {command}", descriptor, command);
+                
                 // launch
                 using var process = new Process();
                 process.StartInfo = processInfo;
                 var start = process.Start();
                 
-                
                 if (!start)
                 {
-                    Log.Error("[POWERSHELL] Unable to start processing {descriptor}: {command}", descriptor, command);
+                    Log.Error("[POWERSHELL] Unable to start process {descriptor}: {command}", descriptor, command);
                     return false;
                 }
+
+                var StandardOutput = process.StandardOutput.ReadToEnd();
+                if (!string.IsNullOrEmpty(StandardOutput))
+                {
+                    Log.Information("[POWERSHELL][OUTPUT]\n{StandardOutput}", StandardOutput);
+                }
+                var StandardError = process.StandardError.ReadToEnd();
+                if (!string.IsNullOrEmpty(StandardError))
+                {
+                    Log.Error("[POWERSHELL][ERROR]\n{StandardError}", StandardError);
+                }
                 
-                Log.Information(process.StandardOutput.ReadToEnd());
                 // done
                 return true;
             }
